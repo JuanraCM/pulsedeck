@@ -1,25 +1,28 @@
+# typed: false
+# frozen_string_literal: true
+
 RSpec.describe Pulsedeck::App do
-  def app = described_class
+  let(:app) { described_class }
 
-  describe "GET /" do
-    before { get "/" }
+  describe 'GET /' do
+    before { get '/' }
 
-    it "returns an HTML page" do
+    it 'returns an HTML page', :aggregate_failures do
       expect(last_response.status).to eq(200)
-      expect(last_response.content_type).to include("text/html")
+      expect(last_response.content_type).to include('text/html')
     end
 
-    it "has the title and three panels" do
+    it 'has the title and three panels', :aggregate_failures do
       body = last_response.body
-      expect(body).to include("<title>Pulsedeck</title>")
-      ["CPU temperature", "GPU power", "Fan speed"].each do |panel_title|
+      expect(body).to include('<title>Pulsedeck</title>')
+      ['CPU temperature', 'GPU power', 'Fan speed'].each do |panel_title|
         expect(body).to include(panel_title)
       end
     end
   end
 
-  it "returns 404 for an unknown path" do
-    get "/nope"
+  it 'returns 404 for an unknown path' do
+    get '/nope'
     expect(last_response.status).to eq(404)
   end
 end

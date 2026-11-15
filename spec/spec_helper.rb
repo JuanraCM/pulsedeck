@@ -1,7 +1,10 @@
-ENV["APP_ENV"] = "test"
+# typed: false
+# frozen_string_literal: true
 
-require "rack/test"
-require_relative "../lib/pulsedeck"
+ENV['APP_ENV'] = 'test'
+
+require 'rack/test'
+require_relative '../lib/pulsedeck'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

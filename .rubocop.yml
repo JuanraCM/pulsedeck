@@ -1,0 +1,22 @@
+plugins:
+  - rubocop-sorbet
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 4.0
+  Exclude:
+    - "sorbet/**/*"
+    - "vendor/**/*"
+    - "bin/**/*"
+
+Sorbet/ValidSigil:
+  Enabled: true
+  RequireSigilOnAllFiles: true
+
+# Sorbet sigs need a named block parameter, so anonymous forwarding is not possible.
+Style/ArgumentsForwarding:
+  Enabled: false
+
+Naming/BlockForwarding:
+  Enabled: false
