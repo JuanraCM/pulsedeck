@@ -58,3 +58,4 @@ Status: new project. Most code does not exist yet.
 
 - The flake gives a NixOS module. This is the primary deployment method.
 - The module defines the server as a `systemd` service and opens the firewall ports.
+- `nix flake check` runs the NixOS VM test.
