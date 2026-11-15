@@ -15,9 +15,11 @@ module Pulsedeck
 
       sig { void }
       def view_template
-        value = @provider.read
+        value = @provider.value
         render(Panel.new(title: @provider.label)) do
-          span(class: 'value') { value.nil? ? 'N/A' : "#{format('%.1f', value)} #{@provider.unit}" }
+          span(class: 'value', data: { metric: @provider.id, unit: @provider.unit }) do
+            value.nil? ? 'N/A' : "#{value} #{@provider.unit}"
+          end
         end
       end
     end

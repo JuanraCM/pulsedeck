@@ -11,8 +11,9 @@ RSpec.describe Pulsedeck::Providers::CpuTemperature do
     expect(described_class.new.read).to be_nil
   end
 
-  it 'has a label and a unit', :aggregate_failures do
+  it 'has an id, a label and a unit', :aggregate_failures do
     provider = described_class.new
+    expect(provider.id).to eq('cpu_temperature')
     expect(provider.label).to eq('CPU temperature')
     expect(provider.unit).to eq('°C')
   end

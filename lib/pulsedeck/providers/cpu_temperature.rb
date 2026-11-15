@@ -6,6 +6,9 @@ module Pulsedeck
     # AMD CPU temperature from the k10temp driver.
     class CpuTemperature < Base
       sig { override.returns(String) }
+      def id = 'cpu_temperature'
+
+      sig { override.returns(String) }
       def label = 'CPU temperature'
 
       sig { override.returns(String) }
