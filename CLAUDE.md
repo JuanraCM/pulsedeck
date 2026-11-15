@@ -12,6 +12,7 @@ Status: new project. Most code does not exist yet.
 
 - Write all explanations in ASD-STE100 Simplified Technical English.
 - Write all commit messages in the Conventional Commits format (`type(scope): description`).
+- Always run project commands inside the Nix development shell (`nix develop -c <command>`). The host Ruby is not the project Ruby.
 
 ## Stack
 
