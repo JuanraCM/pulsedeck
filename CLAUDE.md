@@ -31,6 +31,8 @@ Status: new project. Most code does not exist yet.
 - `bundle exec rubocop`: do the lint. Add `-a` to correct offenses automatically.
 - `bundle exec rspec`: run the tests.
 - `nix build`: build the package.
+- `nix develop -c bundix`: make `gemset.nix` again. Do this after each change to `Gemfile.lock`.
+- `nix flake check`: run the NixOS VM test.
 
 ## Architecture
 

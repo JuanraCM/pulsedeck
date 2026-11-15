@@ -3,6 +3,7 @@
 
 source 'https://rubygems.org'
 
+# Also listed in `runtimeGems` in flake.nix.
 gem 'phlex', '~> 2.0'
 gem 'puma'
 gem 'rackup'
