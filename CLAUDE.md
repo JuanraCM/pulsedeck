@@ -18,6 +18,7 @@ Status: new project. Most code does not exist yet.
 - Ruby and Sinatra for the web server.
 - Sorbet for types. Put a `# typed:` sigil in each Ruby file.
 - RuboCop for lint.
+- RSpec for tests.
 - Phlex for HTML views. Do not use ERB templates.
 - Nix flake for build and deployment.
 
@@ -27,6 +28,7 @@ Status: new project. Most code does not exist yet.
 - `bundle exec rackup`: start the server.
 - `bundle exec srb tc`: do the type check.
 - `bundle exec rubocop`: do the lint. Add `-a` to correct offenses automatically.
+- `bundle exec rspec`: run the tests.
 - `nix build`: build the package.
 
 ## Architecture
