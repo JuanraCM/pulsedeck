@@ -45,6 +45,7 @@ Status: new project. Most code does not exist yet.
 - One Sinatra endpoint serves the dashboard page.
 - The page updates automatically. Do not use full-page reloads. Update only the widget data.
 - A config file defines the widgets and their positions. Build the dashboard from this file.
+- A dashboard is made of widgets as direct children. Do not give providers (or other widget data) to the dashboard. Each widget owns its provider.
 
 ### Widgets and layouts
 
