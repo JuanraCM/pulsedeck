@@ -12,4 +12,10 @@ RSpec.describe Pulsedeck::Views::Dashboard do
   it 'shows N/A when the sensor is missing' do
     expect(described_class.new.call).to include('N/A')
   end
+
+  it 'opens one event stream to update the widgets', :aggregate_failures do
+    html = described_class.new.call
+    expect(html).to include('<script>')
+    expect(html).to include("EventSource('/events')")
+  end
 end
