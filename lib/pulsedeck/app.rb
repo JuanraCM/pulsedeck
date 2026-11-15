@@ -9,7 +9,7 @@ module Pulsedeck
     get '/' do
       T.bind(self, Pulsedeck::App)
       content_type 'text/html'
-      Views::TestPage.new.call
+      Views::Dashboard.new.call
     end
   end
 end

@@ -12,12 +12,10 @@ RSpec.describe Pulsedeck::App do
       expect(last_response.content_type).to include('text/html')
     end
 
-    it 'has the title and three panels', :aggregate_failures do
+    it 'has the title and the CPU temperature panel', :aggregate_failures do
       body = last_response.body
       expect(body).to include('<title>Pulsedeck</title>')
-      ['CPU temperature', 'GPU power', 'Fan speed'].each do |panel_title|
-        expect(body).to include(panel_title)
-      end
+      expect(body).to include('CPU temperature')
     end
   end
 

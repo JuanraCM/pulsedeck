@@ -4,7 +4,7 @@
 module Pulsedeck
   module Views
     # typed: true because the Phlex HTML DSL is generated at runtime.
-    class TestPage < Phlex::HTML
+    class Dashboard < Phlex::HTML
       extend T::Sig
 
       sig { void }
@@ -12,9 +12,7 @@ module Pulsedeck
         render Components::Layout.new do
           h1 { 'Pulsedeck' }
           div(class: 'panels') do
-            render(Components::Panel.new(title: 'CPU temperature')) { plain '42 °C' }
-            render(Components::Panel.new(title: 'GPU power')) { plain '85 W' }
-            render(Components::Panel.new(title: 'Fan speed')) { plain '1200 RPM' }
+            render Components::ValueWidget.new(provider: Providers::CpuTemperature.new)
           end
         end
       end
