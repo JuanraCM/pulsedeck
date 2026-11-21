@@ -155,6 +155,9 @@
           packages = [
             pkgs.ruby_4_0
             pkgs.bundix
+            # Headless browser and curl for the dashboard-screenshot skill.
+            pkgs.chromium
+            pkgs.curl
           ];
           shellHook = ''
             export BUNDLE_PATH="$PWD/vendor/bundle"

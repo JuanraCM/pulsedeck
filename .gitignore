@@ -3,3 +3,4 @@ vendor/
 result
 .direnv/
 .specs/
+tmp/
