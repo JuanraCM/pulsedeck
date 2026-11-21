@@ -32,6 +32,15 @@ RSpec.describe Pulsedeck::Views::Dashboard do
     end
   end
 
+  describe '#providers' do
+    it 'returns the providers of the widgets, one for each id', :aggregate_failures do
+      dashboard = described_class.new(columns: 2, rows: 2, widgets: [widget.call(column: 1, row: 1),
+                                                                     widget.call(column: 2, row: 1)])
+      expect(dashboard.providers.map(&:id)).to eq(['cpu_temperature'])
+      expect(dashboard.providers.first).to be_a(Pulsedeck::Providers::CpuTemperature)
+    end
+  end
+
   it 'raises when a placement is outside the grid', :aggregate_failures do
     expect { described_class.new(columns: 2, rows: 2, widgets: [widget.call(column: 2, row: 1, width: 2)]) }
       .to raise_error(ArgumentError)

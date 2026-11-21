@@ -10,6 +10,9 @@ module Pulsedeck
       sig { returns(Placement) }
       attr_reader :placement
 
+      sig { returns(Providers::Base) }
+      attr_reader :provider
+
       sig { params(provider: Providers::Base, placement: Placement).void }
       def initialize(provider:, placement:)
         @provider = provider

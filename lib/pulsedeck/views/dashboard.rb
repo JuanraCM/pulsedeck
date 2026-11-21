@@ -43,6 +43,11 @@ module Pulsedeck
         super()
       end
 
+      sig { returns(T::Array[Providers::Base]) }
+      def providers
+        @widgets.map(&:provider).uniq(&:id)
+      end
+
       sig { void }
       def view_template
         render Components::Layout.new do
