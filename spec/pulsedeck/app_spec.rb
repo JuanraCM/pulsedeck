@@ -103,6 +103,15 @@ RSpec.describe Pulsedeck::App do
     end
   end
 
+  describe 'GET /vendor/chart.umd.min.js' do
+    before { get '/vendor/chart.umd.min.js' }
+
+    it 'serves the vendored Chart.js file', :aggregate_failures do
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to include('javascript')
+    end
+  end
+
   it 'returns 404 for an unknown path' do
     get '/nope'
     expect(last_response.status).to eq(404)
