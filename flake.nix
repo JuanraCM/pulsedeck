@@ -55,13 +55,14 @@
                 ./config.ru
                 ./config
                 ./lib
+                ./public
               ];
             };
             nativeBuildInputs = [ pkgs.makeWrapper ];
             installPhase = ''
               runHook preInstall
               mkdir -p $out/share/pulsedeck $out/bin
-              cp -r config.ru config lib $out/share/pulsedeck/
+              cp -r config.ru config lib public $out/share/pulsedeck/
               makeWrapper ${gems}/bin/rackup $out/bin/pulsedeck \
                 --chdir $out/share/pulsedeck \
                 --set GEM_PATH ${gems}/${pkgs.ruby_4_0.gemPath} \
@@ -173,6 +174,7 @@
                 node.wait_for_unit("pulsedeck.service")
                 node.wait_for_open_port(8080)
             client.succeed("curl -sf http://server:8080/ | grep 'data-metric=\"cpu_temperature\"'")
+            client.succeed("curl -sf http://server:8080/vendor/chart.umd.min.js | grep Chart > /dev/null")
             server.succeed("test -f /home/alice/.config/pulsedeck/config.yml")
             client.fail("curl -sf --max-time 5 http://closed:8080/")
             home.wait_for_unit("pulsedeck.service")

@@ -8,6 +8,9 @@ module Pulsedeck
 
     UPDATE_INTERVAL = 1.0
 
+    # The default public folder is relative to the Sinatra root (lib/pulsedeck), so set it here.
+    set :public_folder, File.expand_path('../../public', __dir__)
+
     error Config::Error do
       T.bind(self, Pulsedeck::App)
       status 500

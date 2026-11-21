@@ -100,6 +100,37 @@ RSpec.describe Pulsedeck::Config do
     end
   end
 
+  context 'with line_graph widgets' do
+    let(:widgets) { described_class.load(path).instance_variable_get(:@widgets) }
+
+    before do
+      write.call(<<~YAML)
+        grid:
+          columns: 3
+          rows: 2
+        widgets:
+          - provider: cpu_load
+            type: line_graph
+            readings: 30
+            column: 1
+            row: 1
+          - provider: ram_usage
+            type: line_graph
+            column: 2
+            row: 1
+          - provider: cpu_temperature
+            column: 3
+            row: 1
+      YAML
+    end
+
+    it 'builds line graph widgets with the readings or the default', :aggregate_failures do
+      expect(widgets.map(&:class)).to eq(([Pulsedeck::Components::LineGraphWidget] * 2) +
+                                         [Pulsedeck::Components::ValueWidget])
+      expect(widgets.first(2).map(&:readings)).to eq([30, 60])
+    end
+  end
+
   describe 'PROVIDERS' do
     described_class::PROVIDERS.each do |key, klass|
       it "builds a provider with the id #{key}" do
@@ -122,12 +153,25 @@ RSpec.describe Pulsedeck::Config do
       'a value of 0' => "grid:\n  columns: 2\n  rows: 2\nwidgets:\n  - provider: cpu_temperature\n    " \
                         "column: 0\n    row: 1\n",
       'a widget outside the grid' => "grid:\n  columns: 2\n  rows: 2\nwidgets:\n  - provider: cpu_temperature\n    " \
-                                     "column: 2\n    row: 1\n    width: 2\n"
+                                     "column: 2\n    row: 1\n    width: 2\n",
+      'an unknown widget type' => "grid:\n  columns: 2\n  rows: 2\nwidgets:\n  - provider: cpu_load\n    " \
+                                  "type: pie\n    column: 1\n    row: 1\n",
+      'readings of 1' => "grid:\n  columns: 2\n  rows: 2\nwidgets:\n  - provider: cpu_load\n    " \
+                         "type: line_graph\n    readings: 1\n    column: 1\n    row: 1\n",
+      'readings that is not an integer' => "grid:\n  columns: 2\n  rows: 2\nwidgets:\n  - provider: cpu_load\n    " \
+                                           "type: line_graph\n    readings: many\n    column: 1\n    row: 1\n",
+      'readings on a value widget' => "grid:\n  columns: 2\n  rows: 2\nwidgets:\n  - provider: cpu_load\n    " \
+                                      "readings: 5\n    column: 1\n    row: 1\n"
     }.each do |name, yaml|
       it "raises Config::Error with the path for #{name}" do
         write.call(yaml)
         expect { described_class.load(path) }.to raise_error(described_class::Error, /\A#{Regexp.escape(path)}: /)
       end
+    end
+
+    it 'lists the known widget types' do
+      write.call("grid: { columns: 2, rows: 2 }\nwidgets:\n  - { provider: cpu_load, type: pie, column: 1, row: 1 }\n")
+      expect { described_class.load(path) }.to raise_error(described_class::Error, /value, line_graph/)
     end
 
     it 'lists the known provider ids' do
