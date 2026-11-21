@@ -97,6 +97,12 @@
               default = false;
               description = "Open the server port in the NixOS firewall.";
             };
+            user = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              example = "alice";
+              description = "Run the service as this existing user. The service then reads $HOME/.config/pulsedeck/config.yml of this user. When null, the service runs as a dynamic user with HOME set to /var/lib/pulsedeck.";
+            };
           };
 
           config = lib.mkIf cfg.enable {
@@ -105,19 +111,39 @@
               after = [ "network.target" ];
               serviceConfig = {
                 ExecStart = "${lib.getExe pkg} --port ${toString cfg.port}";
-                DynamicUser = true;
-                StateDirectory = "pulsedeck";
-                Environment = "HOME=/var/lib/pulsedeck";
                 Restart = "on-failure";
-                ProtectHome = true;
                 PrivateTmp = true;
-              };
+              }
+              // (
+                if cfg.user == null then
+                  {
+                    DynamicUser = true;
+                    StateDirectory = "pulsedeck";
+                    Environment = "HOME=/var/lib/pulsedeck";
+                    ProtectHome = true;
+                  }
+                else
+                  {
+                    User = cfg.user;
+                    DynamicUser = false;
+                  }
+              );
             };
             networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
           };
         };
 
-      checks = forAllSystems (pkgs: {
+      checks = forAllSystems (pkgs: let
+        userConfig = pkgs.writeText "config.yml" ''
+          grid:
+            columns: 1
+            rows: 1
+          widgets:
+            - provider: gpu_power
+              column: 1
+              row: 1
+        '';
+      in {
         nixos-module = pkgs.testers.runNixOSTest {
           name = "pulsedeck-nixos-module";
           nodes = {
@@ -136,6 +162,17 @@
                 port = 8080;
               };
             };
+            home = { ... }: {
+              imports = [ self.nixosModules.default ];
+              users.users.alice = {
+                isNormalUser = true;
+              };
+              services.pulsedeck = {
+                enable = true;
+                port = 8080;
+                user = "alice";
+              };
+            };
             client = { ... }: {
               environment.systemPackages = [ pkgs.curl ];
             };
@@ -148,6 +185,12 @@
             client.succeed("curl -sf http://server:8080/ | grep 'data-metric=\"cpu_temperature\"'")
             server.succeed("test -f /var/lib/pulsedeck/.config/pulsedeck/config.yml")
             client.fail("curl -sf --max-time 5 http://closed:8080/")
+            home.wait_for_unit("pulsedeck.service")
+            home.wait_for_open_port(8080)
+            home.succeed("systemctl show -p User --value pulsedeck.service | grep -x alice")
+            home.succeed("install -D -o alice -g users -m 644 ${userConfig} /home/alice/.config/pulsedeck/config.yml")
+            home.succeed("curl -sf http://localhost:8080/ | grep 'data-metric=\"gpu_power\"'")
+            home.fail("curl -sf http://localhost:8080/ | grep 'data-metric=\"cpu_temperature\"'")
           '';
         };
       });

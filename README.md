@@ -105,10 +105,19 @@ Pulsedeck ships a NixOS module that runs the server as a `systemd` service.
 | `services.pulsedeck.enable` | bool | `false` | Run Pulsedeck as the `pulsedeck.service` systemd service. |
 | `services.pulsedeck.port` | port | `9292` | TCP port the server listens on. |
 | `services.pulsedeck.openFirewall` | bool | `false` | Open the port in the NixOS firewall. |
+| `services.pulsedeck.user` | string or null | `null` | Run the service as this existing user. The service reads `$HOME/.config/pulsedeck/config.yml` of this user. |
 
-The service runs as a dynamic user, so it cannot bind ports below 1024.
+When `user` is `null`, the service runs as a dynamic user, so it cannot bind ports below 1024. The service sets `HOME` to its state directory, so the config file is `/var/lib/pulsedeck/.config/pulsedeck/config.yml`. Pulsedeck writes the default file there on the first request.
 
-The service sets `HOME` to its state directory, so the config file is `/var/lib/pulsedeck/.config/pulsedeck/config.yml`. Pulsedeck writes the default file there on the first request.
+When `user` is set, the service runs as that user. The config file is `$HOME/.config/pulsedeck/config.yml` of that user. The user must exist (`users.users.<name>`). The module does not create the user.
+
+```nix
+users.users.alice.isNormalUser = true;
+services.pulsedeck = {
+  enable = true;
+  user = "alice";
+};
+```
 
 ## Development
 
