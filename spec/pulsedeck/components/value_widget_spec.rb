@@ -11,7 +11,7 @@ RSpec.describe Pulsedeck::Components::ValueWidget do
       define_method(:read) { value }
     end.new
   end
-  let(:html) { described_class.new(provider: provider).call }
+  let(:html) { described_class.new(provider: provider, placement: Pulsedeck::Placement.new(column: 1, row: 1)).call }
 
   context 'with a value' do
     let(:reading) { 47.25 }

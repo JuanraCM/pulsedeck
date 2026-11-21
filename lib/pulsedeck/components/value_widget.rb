@@ -7,16 +7,17 @@ module Pulsedeck
     class ValueWidget < Phlex::HTML
       extend T::Sig
 
-      sig { params(provider: Providers::Base).void }
-      def initialize(provider:)
+      sig { params(provider: Providers::Base, placement: Placement).void }
+      def initialize(provider:, placement:)
         @provider = provider
+        @placement = placement
         super()
       end
 
       sig { void }
       def view_template
         value = @provider.value
-        render(Panel.new(title: @provider.label)) do
+        render(Panel.new(title: @provider.label, placement: @placement)) do
           span(class: 'value', data: { metric: @provider.id, unit: @provider.unit }) do
             value.nil? ? 'N/A' : "#{value} #{@provider.unit}"
           end

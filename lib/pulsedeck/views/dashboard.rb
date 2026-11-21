@@ -21,8 +21,9 @@ module Pulsedeck
       def view_template
         render Components::Layout.new do
           h1 { 'Pulsedeck' }
-          div(class: 'panels') do
-            render Components::ValueWidget.new(provider: Providers::CpuTemperature.new)
+          render Components::Grid.new(columns: 1, rows: 1) do
+            render Components::ValueWidget.new(provider: Providers::CpuTemperature.new,
+                                               placement: Placement.new(column: 1, row: 1))
           end
           script { raw safe(SCRIPT) }
         end

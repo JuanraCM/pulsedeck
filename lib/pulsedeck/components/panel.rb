@@ -7,21 +7,27 @@ module Pulsedeck
     class Panel < Phlex::HTML
       extend T::Sig
 
-      STYLE = 'border: 1px solid #444; border-radius: 8px; padding: 1rem; min-width: 12rem;'
-      TITLE_STYLE = 'margin: 0 0 0.5rem; font-size: 1rem;'
-
-      sig { params(title: String).void }
-      def initialize(title:)
+      sig { params(title: String, placement: Placement).void }
+      def initialize(title:, placement:)
         @title = title
+        @placement = placement
         super()
       end
 
       sig { params(block: T.proc.void).void }
       def view_template(&block)
-        section(class: 'panel', style: STYLE) do
-          h2(style: TITLE_STYLE) { @title }
+        section(class: 'panel', style: style) do
+          h2(class: 'panel-title') { @title }
           div(class: 'panel-body', &block)
         end
+      end
+
+      private
+
+      sig { returns(String) }
+      def style
+        p = @placement
+        "grid-column: #{p.column} / span #{p.width}; grid-row: #{p.row} / span #{p.height}"
       end
     end
   end
