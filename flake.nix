@@ -106,6 +106,8 @@
               serviceConfig = {
                 ExecStart = "${lib.getExe pkg} --port ${toString cfg.port}";
                 DynamicUser = true;
+                StateDirectory = "pulsedeck";
+                Environment = "HOME=/var/lib/pulsedeck";
                 Restart = "on-failure";
                 ProtectHome = true;
                 PrivateTmp = true;
@@ -144,6 +146,7 @@
                 node.wait_for_unit("pulsedeck.service")
                 node.wait_for_open_port(8080)
             client.succeed("curl -sf http://server:8080/ | grep 'data-metric=\"cpu_temperature\"'")
+            server.succeed("test -f /var/lib/pulsedeck/.config/pulsedeck/config.yml")
             client.fail("curl -sf --max-time 5 http://closed:8080/")
           '';
         };
