@@ -53,6 +53,14 @@ module Pulsedeck
       File.join(Dir.home, '.config', 'pulsedeck', 'config.yml')
     end
 
+    # The modification time of the config file, or nil when the file does not exist.
+    sig { params(path: String).returns(T.nilable(Time)) }
+    def self.version(path = self.path)
+      File.mtime(path)
+    rescue SystemCallError
+      nil
+    end
+
     sig { params(path: String).returns(Views::Dashboard) }
     def self.load(path = self.path)
       write_default(path) unless File.exist?(path)

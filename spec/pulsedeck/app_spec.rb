@@ -45,6 +45,7 @@ RSpec.describe Pulsedeck::App do
 
   describe 'GET /events' do
     before do
+      Pulsedeck::Config.load # Writes the default file, so the version does not change.
       allow(Pulsedeck::EventStream).to receive(:new).and_wrap_original do |original, **args|
         original.call(**args).tap { |stream| allow(stream).to receive(:sleep).and_raise(StopIteration) }
       end
@@ -55,6 +56,18 @@ RSpec.describe Pulsedeck::App do
       expect(last_response.status).to eq(200)
       expect(last_response.content_type).to include('text/event-stream')
       expect(last_response.body).to start_with('data: {"cpu_temperature":')
+    end
+  end
+
+  describe 'GET /events when the config version changes' do
+    before do
+      allow(Pulsedeck::Config).to receive(:version).and_return(1, 2)
+      get '/events'
+    end
+
+    it 'ends the stream with an empty body', :aggregate_failures do
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to be_empty
     end
   end
 

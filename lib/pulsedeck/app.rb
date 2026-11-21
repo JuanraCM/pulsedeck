@@ -23,8 +23,10 @@ module Pulsedeck
 
     get '/events' do
       T.bind(self, Pulsedeck::App)
+      version = Config.version
+      providers = Config.load.providers
       [200, { 'content-type' => 'text/event-stream', 'cache-control' => 'no-cache' },
-       EventStream.new(providers: Config.load.providers, interval: UPDATE_INTERVAL)]
+       EventStream.new(providers: providers, interval: UPDATE_INTERVAL, stale: -> { Config.version != version })]
     end
   end
 end

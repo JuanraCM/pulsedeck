@@ -19,6 +19,28 @@ RSpec.describe Pulsedeck::Config do
     expect(described_class.path).to eq(File.join(Dir.home, '.config', 'pulsedeck', 'config.yml'))
   end
 
+  describe '.version' do
+    before do
+      write.call('a')
+      File.utime(Time.at(1_000), Time.at(1_000), path)
+    end
+
+    it 'returns the mtime' do
+      expect(described_class.version(path)).to eq(Time.at(1_000))
+    end
+
+    it 'changes after a rewrite with a later mtime' do
+      write.call('b')
+      File.utime(Time.at(2_000), Time.at(2_000), path)
+      expect(described_class.version(path)).to eq(Time.at(2_000))
+    end
+
+    it 'returns nil for a missing file' do
+      FileUtils.rm_f(path)
+      expect(described_class.version(path)).to be_nil
+    end
+  end
+
   context 'when the file is missing' do
     it 'writes the default file', :aggregate_failures do
       described_class.load(path)
