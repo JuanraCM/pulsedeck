@@ -17,6 +17,11 @@ RSpec.describe Pulsedeck::App do
       expect(body).to include('<title>Pulsedeck</title>')
       expect(body).to include('CPU temperature')
     end
+
+    it 'renders the 7 panels of the default dashboard and the event stream script', :aggregate_failures do
+      expect(last_response.body.scan('class="panel"').size).to eq(7)
+      expect(last_response.body).to include("EventSource('/events')")
+    end
   end
 
   describe 'GET /events' do

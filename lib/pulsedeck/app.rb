@@ -13,7 +13,7 @@ module Pulsedeck
     get '/' do
       T.bind(self, Pulsedeck::App)
       content_type 'text/html'
-      Views::Dashboard.new.call
+      Views::Dashboard.default.call
     end
 
     get '/events' do

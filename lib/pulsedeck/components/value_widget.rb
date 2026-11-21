@@ -7,6 +7,9 @@ module Pulsedeck
     class ValueWidget < Phlex::HTML
       extend T::Sig
 
+      sig { returns(Placement) }
+      attr_reader :placement
+
       sig { params(provider: Providers::Base, placement: Placement).void }
       def initialize(provider:, placement:)
         @provider = provider
