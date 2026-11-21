@@ -24,6 +24,7 @@ grid:
 
 # Each widget has a provider and a placement.
 # column and row start at 1. width and height are optional (default 1).
+# type is optional: value (default) or line_graph. readings is optional for line_graph: number of past readings (default 60).
 widgets:
   - provider: cpu_load # Provider id. Known ids: cpu_temperature, cpu_load, gpu_temperature, gpu_power, gpu_load, ram_usage, vram_usage
     column: 1
@@ -56,7 +57,21 @@ widgets:
 - `grid.columns` and `grid.rows` set the size of the grid.
 - Each widget has a `provider` (known ids: `cpu_temperature`, `cpu_load`, `gpu_temperature`, `gpu_power`, `gpu_load`, `ram_usage`, `vram_usage`), a `column` and a `row`. Column and row start at 1.
 - `width` and `height` are optional. The default is 1.
+- `type` is optional. `value` (default) shows the current value. `line_graph` shows the last `readings` values as a line.
+- `readings` is optional and only for `line_graph`. It is the number of past readings in the graph (2 or more, default 60). Pulsedeck reads one value each second. The graph starts empty when the page loads.
 - A widget must be inside the grid.
+
+Example of a `line_graph` widget:
+
+```yaml
+- provider: cpu_load
+  type: line_graph
+  readings: 120
+  column: 1
+  row: 1
+  width: 2
+  height: 2
+```
 
 The dashboard reloads itself when you change the config file.
 

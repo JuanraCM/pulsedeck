@@ -3,7 +3,7 @@
 
 module Pulsedeck
   # Builds the dashboard from the YAML config file.
-  module Config
+  module Config # rubocop:disable Metrics/ModuleLength -- the default YAML text is part of the module
     extend T::Sig
 
     # Raised when the config file is not valid. The message starts with the file path.
@@ -17,6 +17,7 @@ module Pulsedeck
 
       # Each widget has a provider and a placement.
       # column and row start at 1. width and height are optional (default 1).
+      # type is optional: value (default) or line_graph. readings is optional for line_graph: number of past readings (default 60).
       widgets:
         - provider: cpu_load # Provider id. Known ids: cpu_temperature, cpu_load, gpu_temperature, gpu_power, gpu_load, ram_usage, vram_usage
           column: 1
@@ -103,13 +104,30 @@ module Pulsedeck
       value
     end
 
-    sig { params(widget: T.untyped).returns(Components::ValueWidget) }
+    sig { params(widget: T.untyped).returns(T.any(Components::ValueWidget, Components::LineGraphWidget)) }
     def self.build_widget(widget)
       raise TypeError, 'Each widget must be a mapping' unless widget.is_a?(Hash)
 
       attributes = widget.transform_keys { |key| key.to_s.to_sym }
       id = attributes.delete(:provider) { raise KeyError, 'A widget has no "provider"' }
-      Components::ValueWidget.new(provider: provider_class(id).new, placement: Placement.new(**T.unsafe(attributes)))
+      type = attributes.delete(:type) { 'value' }
+      build_typed(type, provider_class(id).new, attributes)
+    end
+
+    sig do
+      params(type: T.untyped, provider: Providers::Base, attributes: T::Hash[Symbol, T.untyped])
+        .returns(T.any(Components::ValueWidget, Components::LineGraphWidget))
+    end
+    def self.build_typed(type, provider, attributes)
+      case type
+      when 'value' then Components::ValueWidget.new(provider: provider,
+                                                    placement: Placement.new(**T.unsafe(attributes)))
+      when 'line_graph'
+        readings = attributes.delete(:readings) { Components::LineGraphWidget::DEFAULT_READINGS }
+        Components::LineGraphWidget.new(provider: provider, placement: Placement.new(**T.unsafe(attributes)),
+                                        readings: readings)
+      else raise ArgumentError, "Unknown widget type #{type.inspect}. Known types: value, line_graph"
+      end
     end
 
     sig { params(id: T.untyped).returns(T.class_of(Providers::Base)) }
@@ -119,6 +137,6 @@ module Pulsedeck
       end
     end
 
-    private_class_method :write_default, :build, :fetch_hash, :build_widget, :provider_class
+    private_class_method :write_default, :build, :fetch_hash, :build_widget, :build_typed, :provider_class
   end
 end
