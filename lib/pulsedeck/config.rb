@@ -13,34 +13,43 @@ module Pulsedeck
       # Size of the dashboard grid, in cells.
       grid:
         columns: 3
-        rows: 2
+        rows: 4
 
       # Each widget has a provider and a placement.
       # column and row start at 1. width and height are optional (default 1).
       widgets:
-        - provider: cpu_temperature # Provider id. Known ids: cpu_temperature, cpu_load, gpu_power, gpu_load, ram_usage, vram_usage
+        - provider: cpu_load # Provider id. Known ids: cpu_temperature, cpu_load, gpu_temperature, gpu_power, gpu_load, ram_usage, vram_usage
           column: 1
           row: 1
-        - provider: cpu_load
+          height: 2
+        - provider: cpu_temperature
+          column: 1
+          row: 3
+          height: 2
+        - provider: gpu_power
           column: 2
           row: 1
+          height: 2
+        - provider: gpu_load
+          column: 2
+          row: 3
+        - provider: gpu_temperature
+          column: 2
+          row: 4
         - provider: ram_usage
           column: 3
           row: 1
-        - provider: gpu_power
-          column: 1
-          row: 2
-        - provider: gpu_load
-          column: 2
-          row: 2
+          height: 2
         - provider: vram_usage
           column: 3
-          row: 2
+          row: 3
+          height: 2
     YAML
 
     PROVIDERS = T.let({
       'cpu_temperature' => Providers::CpuTemperature,
       'cpu_load' => Providers::CpuLoad,
+      'gpu_temperature' => Providers::GpuTemperature,
       'gpu_power' => Providers::GpuPower,
       'gpu_load' => Providers::GpuLoad,
       'ram_usage' => Providers::RamUsage,

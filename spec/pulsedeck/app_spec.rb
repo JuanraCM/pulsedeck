@@ -20,12 +20,12 @@ RSpec.describe Pulsedeck::App do
 
     it 'renders the 6 panels of the default dashboard and the event stream script', :aggregate_failures do
       expect(last_response.body).not_to include('http-equiv="refresh"')
-      expect(last_response.body.scan('class="panel"').size).to eq(6)
+      expect(last_response.body.scan('class="panel"').size).to eq(7)
       expect(last_response.body).to include("EventSource('/events')")
     end
 
     it 'shows a data-metric for each default provider' do
-      ids = %w[cpu_temperature cpu_load ram_usage gpu_power gpu_load vram_usage]
+      ids = %w[cpu_temperature cpu_load ram_usage gpu_temperature gpu_power gpu_load vram_usage]
       expect(ids.map { |id| last_response.body.include?("data-metric=\"#{id}\"") }).to all(be(true))
     end
 
@@ -72,7 +72,7 @@ RSpec.describe Pulsedeck::App do
     it 'streams the metric values as server-sent events', :aggregate_failures do
       expect(last_response.status).to eq(200)
       expect(last_response.content_type).to include('text/event-stream')
-      expect(last_response.body).to start_with('data: {"cpu_temperature":')
+      expect(last_response.body).to start_with('data: {').and include('"cpu_temperature":')
     end
   end
 

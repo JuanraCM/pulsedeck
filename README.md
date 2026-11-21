@@ -18,33 +18,41 @@ If the file does not exist, Pulsedeck writes this default file on the first requ
 # Size of the dashboard grid, in cells.
 grid:
   columns: 3
-  rows: 2
+  rows: 4
 
 # Each widget has a provider and a placement.
 # column and row start at 1. width and height are optional (default 1).
 widgets:
-  - provider: cpu_temperature # Provider id. Known ids: cpu_temperature, cpu_load, gpu_power, gpu_load, ram_usage, vram_usage
+  - provider: cpu_load # Provider id. Known ids: cpu_temperature, cpu_load, gpu_temperature, gpu_power, gpu_load, ram_usage, vram_usage
     column: 1
     row: 1
-  - provider: cpu_load
+    height: 2
+  - provider: cpu_temperature
+    column: 1
+    row: 3
+    height: 2
+  - provider: gpu_power
     column: 2
     row: 1
+    height: 2
+  - provider: gpu_load
+    column: 2
+    row: 3
+  - provider: gpu_temperature
+    column: 2
+    row: 4
   - provider: ram_usage
     column: 3
     row: 1
-  - provider: gpu_power
-    column: 1
-    row: 2
-  - provider: gpu_load
-    column: 2
-    row: 2
+    height: 2
   - provider: vram_usage
     column: 3
-    row: 2
+    row: 3
+    height: 2
 ```
 
 - `grid.columns` and `grid.rows` set the size of the grid.
-- Each widget has a `provider` (known ids: `cpu_temperature`, `cpu_load`, `gpu_power`, `gpu_load`, `ram_usage`, `vram_usage`), a `column` and a `row`. Column and row start at 1.
+- Each widget has a `provider` (known ids: `cpu_temperature`, `cpu_load`, `gpu_temperature`, `gpu_power`, `gpu_load`, `ram_usage`, `vram_usage`), a `column` and a `row`. Column and row start at 1.
 - `width` and `height` are optional. The default is 1.
 - A widget must be inside the grid.
 

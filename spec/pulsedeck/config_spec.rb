@@ -47,16 +47,16 @@ RSpec.describe Pulsedeck::Config do
       expect(File.read(path)).to eq(described_class::DEFAULT)
     end
 
-    it 'loads 6 panels in a 3 x 2 grid', :aggregate_failures do
+    it 'loads 7 panels in a 3 x 4 grid', :aggregate_failures do
       html = described_class.load(path).call
-      expect(html.scan('class="panel"').size).to eq(6)
-      expect(html).to include('repeat(3, 1fr)', 'repeat(2, 1fr)')
+      expect(html.scan('class="panel"').size).to eq(7)
+      expect(html).to include('repeat(3, 1fr)', 'repeat(4, 1fr)')
     end
 
-    it 'shows 6 different provider ids' do
+    it 'shows 7 different provider ids' do
       html = described_class.load(path).call
-      ids = %w[cpu_temperature cpu_load ram_usage gpu_power gpu_load vram_usage]
-      expect(ids.map { |id| html.scan("data-metric=\"#{id}\"").size }).to eq([1] * 6)
+      ids = %w[cpu_temperature cpu_load ram_usage gpu_temperature gpu_power gpu_load vram_usage]
+      expect(ids.map { |id| html.scan("data-metric=\"#{id}\"").size }).to eq([1] * 7)
     end
 
     it 'shows N/A when the sensor is missing' do
