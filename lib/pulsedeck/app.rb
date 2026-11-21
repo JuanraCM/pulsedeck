@@ -7,19 +7,24 @@ module Pulsedeck
     extend T::Sig
 
     UPDATE_INTERVAL = 1.0
-    # Duplicates the widget in Views::Dashboard until a widget config file is the one source for both.
-    PROVIDERS = T.let([Providers::CpuTemperature.new].freeze, T::Array[Providers::Base])
+
+    error Config::Error do
+      T.bind(self, Pulsedeck::App)
+      status 500
+      content_type 'text/plain'
+      T.cast(env['sinatra.error'], Config::Error).message
+    end
 
     get '/' do
       T.bind(self, Pulsedeck::App)
       content_type 'text/html'
-      Views::Dashboard.default.call
+      Config.load.call
     end
 
     get '/events' do
       T.bind(self, Pulsedeck::App)
       [200, { 'content-type' => 'text/event-stream', 'cache-control' => 'no-cache' },
-       EventStream.new(providers: PROVIDERS, interval: UPDATE_INTERVAL)]
+       EventStream.new(providers: Config.load.providers, interval: UPDATE_INTERVAL)]
     end
   end
 end

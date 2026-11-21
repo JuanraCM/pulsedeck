@@ -19,21 +19,6 @@ module Pulsedeck
 
       Widgets = T.type_alias { T::Array[Components::ValueWidget] }
 
-      sig { returns(Dashboard) }
-      def self.default
-        new(columns: 4, rows: 3, widgets: [
-              cpu_widget(1, 1, 2, 2), cpu_widget(3, 1, 2, 1), cpu_widget(3, 2, 1, 2), cpu_widget(4, 2),
-              cpu_widget(1, 3), cpu_widget(2, 3), cpu_widget(4, 3)
-            ])
-      end
-
-      sig { params(column: Integer, row: Integer, width: Integer, height: Integer).returns(Components::ValueWidget) }
-      def self.cpu_widget(column, row, width = 1, height = 1)
-        placement = Placement.new(column: column, row: row, width: width, height: height)
-        Components::ValueWidget.new(provider: Providers::CpuTemperature.new, placement: placement)
-      end
-      private_class_method :cpu_widget
-
       sig { params(columns: Integer, rows: Integer, widgets: Widgets).void }
       def initialize(columns:, rows:, widgets:)
         widgets.each { |widget| check_bounds(widget.placement, columns, rows) }
