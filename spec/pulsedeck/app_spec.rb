@@ -19,6 +19,7 @@ RSpec.describe Pulsedeck::App do
     end
 
     it 'renders the 7 panels of the default dashboard and the event stream script', :aggregate_failures do
+      expect(last_response.body).not_to include('http-equiv="refresh"')
       expect(last_response.body.scan('class="panel"').size).to eq(7)
       expect(last_response.body).to include("EventSource('/events')")
     end
@@ -37,9 +38,20 @@ RSpec.describe Pulsedeck::App do
 
     it 'returns 500 with the path and the message, and renders no dashboard', :aggregate_failures do
       expect(last_response.status).to eq(500)
-      expect(last_response.content_type).to include('text/plain')
-      expect(last_response.body).to start_with("#{Pulsedeck::Config.path}: ")
+      expect(last_response.content_type).to include('text/html')
+      expect(last_response.body).to include(Pulsedeck::Config.path)
       expect(last_response.body).not_to include('class="panel"')
+    end
+
+    it 'reloads itself so the dashboard returns when the file is valid' do
+      expect(last_response.body).to include('http-equiv="refresh"')
+    end
+
+    it 'escapes the message', :aggregate_failures do
+      File.write(Pulsedeck::Config.path, "grid: { columns: 1, rows: 1 }\nwidgets: [{ provider: '<b>' }]\n")
+      get '/'
+      expect(last_response.body).to include('&lt;b&gt;')
+      expect(last_response.body).not_to include('<b>')
     end
   end
 

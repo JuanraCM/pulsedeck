@@ -11,8 +11,8 @@ module Pulsedeck
     error Config::Error do
       T.bind(self, Pulsedeck::App)
       status 500
-      content_type 'text/plain'
-      T.cast(env['sinatra.error'], Config::Error).message
+      content_type 'text/html'
+      Views::ConfigError.new(message: T.cast(env['sinatra.error'], Config::Error).message).call
     end
 
     get '/' do

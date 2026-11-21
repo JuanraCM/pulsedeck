@@ -28,4 +28,11 @@ RSpec.describe Pulsedeck::Views::Dashboard do
   it 'accepts a placement at the grid edge' do
     expect { described_class.new(columns: 2, rows: 2, widgets: [widget.call(column: 2, row: 2)]) }.not_to raise_error
   end
+
+  describe 'SCRIPT' do
+    it 'reloads the page when the server state changes', :aggregate_failures do
+      expect(described_class::SCRIPT).to include("EventSource('/events')", 'location.reload()')
+      expect(described_class::SCRIPT).not_to include('fetch(')
+    end
+  end
 end

@@ -55,9 +55,7 @@ widgets:
 - `width` and `height` are optional. The default is 1.
 - A widget must be inside the grid.
 
-Pulsedeck reads the file on each request. Edit the file and reload the page to see the change.
-
-If the file is not valid, the server answers with a 500 response. The response is plain text. It shows the file path and the error. No dashboard renders until you correct the file.
+The dashboard reloads itself when you change the config file.
 
 ## NixOS
 
