@@ -47,10 +47,16 @@ RSpec.describe Pulsedeck::Config do
       expect(File.read(path)).to eq(described_class::DEFAULT)
     end
 
-    it 'loads 7 panels in a 4 x 3 grid', :aggregate_failures do
+    it 'loads 6 panels in a 3 x 2 grid', :aggregate_failures do
       html = described_class.load(path).call
-      expect(html.scan('class="panel"').size).to eq(7)
-      expect(html).to include('repeat(4, 1fr)', 'repeat(3, 1fr)')
+      expect(html.scan('class="panel"').size).to eq(6)
+      expect(html).to include('repeat(3, 1fr)', 'repeat(2, 1fr)')
+    end
+
+    it 'shows 6 different provider ids' do
+      html = described_class.load(path).call
+      ids = %w[cpu_temperature cpu_load ram_usage gpu_power gpu_load vram_usage]
+      expect(ids.map { |id| html.scan("data-metric=\"#{id}\"").size }).to eq([1] * 6)
     end
 
     it 'shows N/A when the sensor is missing' do
@@ -91,6 +97,14 @@ RSpec.describe Pulsedeck::Config do
     it 'defaults width to 1', :aggregate_failures do
       placement = described_class.load(path).instance_variable_get(:@widgets).first.placement
       expect([placement.width, placement.height]).to eq([1, 2])
+    end
+  end
+
+  describe 'PROVIDERS' do
+    described_class::PROVIDERS.each do |key, klass|
+      it "builds a provider with the id #{key}" do
+        expect(klass.new.id).to eq(key)
+      end
     end
   end
 
