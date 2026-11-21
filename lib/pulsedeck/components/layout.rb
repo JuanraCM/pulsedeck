@@ -16,7 +16,6 @@ module Pulsedeck
           margin: 0; padding: var(--gap); height: 100vh; display: flex; flex-direction: column; overflow: hidden;
           background: #111; color: var(--text); font-family: sans-serif;
         }
-        h1 { margin: 0 0 var(--gap); font-size: 1.25rem; }
         .grid { flex: 1; min-height: 0; display: grid; gap: var(--gap); }
         .panel {
           container-type: size; min-width: 0; min-height: 0; overflow: hidden; padding: var(--gap);

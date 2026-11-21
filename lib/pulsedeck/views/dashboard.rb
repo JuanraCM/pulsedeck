@@ -46,7 +46,6 @@ module Pulsedeck
       sig { void }
       def view_template
         render Components::Layout.new do
-          h1 { 'Pulsedeck' }
           render Components::Grid.new(columns: @columns, rows: @rows) do
             @widgets.each { |widget| render widget }
           end
