@@ -174,7 +174,7 @@
                 node.wait_for_unit("pulsedeck.service")
                 node.wait_for_open_port(8080)
             client.succeed("curl -sf http://server:8080/ | grep 'data-metric=\"cpu_temperature\"'")
-            client.succeed("curl -sf http://server:8080/vendor/chart.umd.min.js | grep -q Chart")
+            client.succeed("curl -sf http://server:8080/vendor/chart.umd.min.js | grep Chart > /dev/null")
             server.succeed("test -f /home/alice/.config/pulsedeck/config.yml")
             client.fail("curl -sf --max-time 5 http://closed:8080/")
             home.wait_for_unit("pulsedeck.service")
