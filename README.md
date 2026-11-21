@@ -2,6 +2,8 @@
 
 Pulsedeck is a lightweight hardware monitor dashboard for AMD CPUs and GPUs. It is a web app designed to run on a Raspberry Pi screen, and it updates live without reloading the page.
 
+![Pulsedeck dashboard with the default layout, at 800x480, the Raspberry Pi Touch Display size](docs/dashboard.png)
+
 > **Under development:** features and options may change.
 
 ## Configuration
