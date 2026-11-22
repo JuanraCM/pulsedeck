@@ -19,11 +19,17 @@ module Pulsedeck
         .grid { flex: 1; min-height: 0; display: grid; gap: var(--gap); }
         .error { margin: 0; white-space: pre-wrap; color: #f88; }
         .panel {
-          container-type: size; min-width: 0; min-height: 0; overflow: hidden; padding: var(--gap);
+          display: flex; flex-direction: column; container-type: size; min-width: 0; min-height: 0; overflow: hidden; padding: var(--gap);
           background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
         }
         .panel-title { margin: 0 0 0.5rem; font-size: 1rem; color: var(--muted); }
+        .panel-body { flex: 1; min-height: 0; }
+        .graph-widget { display: flex; flex-direction: column; height: 100%; }
+        .graph-widget .value { font-size: clamp(1rem, 12cqmin, 3rem); }
+        .graph { position: relative; flex: 1; min-height: 0; }
         .value { font-size: clamp(1rem, 22cqmin, 8rem); font-weight: bold; }
+        .panel-body:has(> .value-fit) { display: flex; align-items: center; justify-content: center; }
+        .value-fit { font-size: min(22cqw, 60cqh); line-height: 1; white-space: nowrap; }
       CSS
 
       # refresh: seconds after which the browser reloads the page. Nil means never.

@@ -7,29 +7,7 @@ module Pulsedeck
     class Dashboard < Phlex::HTML
       extend T::Sig
 
-      SCRIPT = <<~JS
-        let stale = false;
-        const source = new EventSource('/events');
-        source.onopen = () => {
-          if (stale) location.reload();
-        };
-        source.onerror = () => {
-          stale = true;
-          // CLOSED: the server answered with an error (invalid config). Show the error page.
-          if (source.readyState === EventSource.CLOSED) location.reload();
-        };
-        source.onmessage = (event) => {
-          for (const [id, value] of Object.entries(JSON.parse(event.data))) {
-            for (const el of document.querySelectorAll(`[data-metric="${id}"]`)) {
-              el.textContent = value === null ? 'N/A' : `${value.toFixed(1)} ${el.dataset.unit}`;
-            }
-          }
-        };
-      JS
-
-      Widgets = T.type_alias { T::Array[Components::ValueWidget] }
-
-      sig { params(columns: Integer, rows: Integer, widgets: Widgets).void }
+      sig { params(columns: Integer, rows: Integer, widgets: T::Array[Components::Widget]).void }
       def initialize(columns:, rows:, widgets:)
         widgets.each { |widget| check_bounds(widget.placement, columns, rows) }
         @columns = columns
@@ -49,7 +27,9 @@ module Pulsedeck
           render Components::Grid.new(columns: @columns, rows: @rows) do
             @widgets.each { |widget| render widget }
           end
-          script { raw safe(SCRIPT) }
+          script(src: '/vendor/chart.umd.min.js')
+          script(src: '/js/graphs.js')
+          script(src: '/js/events.js')
         end
       end
 

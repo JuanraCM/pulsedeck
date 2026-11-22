@@ -21,7 +21,7 @@ RSpec.describe Pulsedeck::App do
     it 'renders the 6 panels of the default dashboard and the event stream script', :aggregate_failures do
       expect(last_response.body).not_to include('http-equiv="refresh"')
       expect(last_response.body.scan('class="panel"').size).to eq(7)
-      expect(last_response.body).to include("EventSource('/events')")
+      expect(last_response.body).to include('<script src="/js/events.js"></script>')
     end
 
     it 'shows a data-metric for each default provider' do
@@ -100,6 +100,36 @@ RSpec.describe Pulsedeck::App do
 
     it 'streams the providers from the file' do
       expect(last_response.body).to start_with('data: {}')
+    end
+  end
+
+  describe 'GET /vendor/chart.umd.min.js' do
+    before { get '/vendor/chart.umd.min.js' }
+
+    it 'serves the vendored Chart.js file', :aggregate_failures do
+      expect(last_response.status).to eq(200)
+      expect(last_response.content_type).to include('javascript')
+    end
+  end
+
+  describe 'GET /js/events.js' do
+    before { get '/js/events.js' }
+
+    it 'serves the event stream script', :aggregate_failures do
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include("EventSource('/events')", 'location.reload()', 'pulsedeck:values')
+      expect(last_response.body).not_to include('fetch(')
+    end
+  end
+
+  describe 'GET /js/graphs.js' do
+    before { get '/js/graphs.js' }
+
+    it 'serves the graph script', :aggregate_failures do
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to include(
+        'new Chart(', 'data-graph', 'minMaxLabels', 'pulsedeck:values'
+      )
     end
   end
 

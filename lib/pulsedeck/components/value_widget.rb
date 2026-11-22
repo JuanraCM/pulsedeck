@@ -4,14 +4,8 @@
 module Pulsedeck
   module Components
     # typed: true because the Phlex HTML DSL is generated at runtime.
-    class ValueWidget < Phlex::HTML
+    class ValueWidget < Widget
       extend T::Sig
-
-      sig { returns(Placement) }
-      attr_reader :placement
-
-      sig { returns(Providers::Base) }
-      attr_reader :provider
 
       sig { params(provider: Providers::Base, placement: Placement).void }
       def initialize(provider:, placement:)
@@ -22,12 +16,7 @@ module Pulsedeck
 
       sig { void }
       def view_template
-        value = @provider.value
-        render(Panel.new(title: @provider.label, placement: @placement)) do
-          span(class: 'value', data: { metric: @provider.id, unit: @provider.unit }) do
-            value.nil? ? 'N/A' : "#{value} #{@provider.unit}"
-          end
-        end
+        render(Panel.new(title: @provider.label, placement: @placement)) { value_span('value-fit') }
       end
     end
   end
