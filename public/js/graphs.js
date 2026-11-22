@@ -18,7 +18,11 @@ for (const canvas of document.querySelectorAll('canvas[data-graph]')) {
       plugins: { legend: { display: false }, tooltip: { enabled: false } },
       scales: {
         x: { display: false },
-        y: { ticks: { color: '#999', callback: (v) => `${v} ${unit}` }, grid: { color: '#333' } }
+        y: {
+          afterBuildTicks: (axis) => { axis.ticks = [{ value: axis.min }, { value: axis.max }]; },
+          ticks: { color: '#999', callback: (v) => `${Number(v.toFixed(2))} ${unit}` },
+          grid: { color: '#333' }
+        }
       }
     }
   });
