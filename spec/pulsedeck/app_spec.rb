@@ -127,7 +127,9 @@ RSpec.describe Pulsedeck::App do
 
     it 'serves the graph script', :aggregate_failures do
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to include('new Chart(', 'data-graph', 'afterBuildTicks', 'pulsedeck:values')
+      expect(last_response.body).to include(
+        'new Chart(', 'data-graph', 'afterBuildTicks', 'mirror: true', 'pulsedeck:values'
+      )
     end
   end
 

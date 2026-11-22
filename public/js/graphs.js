@@ -15,13 +15,15 @@ for (const canvas of document.querySelectorAll('canvas[data-graph]')) {
       animation: false,
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { top: 8, bottom: 8 } },
       plugins: { legend: { display: false }, tooltip: { enabled: false } },
       scales: {
         x: { display: false },
         y: {
           afterBuildTicks: (axis) => { axis.ticks = [{ value: axis.min }, { value: axis.max }]; },
-          ticks: { color: '#999', callback: (v) => `${Number(v.toFixed(2))} ${unit}` },
-          grid: { color: '#333' }
+          ticks: { color: '#999', mirror: true, padding: 4, callback: (v) => `${Number(v.toFixed(2))} ${unit}` },
+          grid: { display: false },
+          border: { display: false }
         }
       }
     }
