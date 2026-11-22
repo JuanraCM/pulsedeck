@@ -5,16 +5,10 @@ module Pulsedeck
   module Components
     # typed: true because the Phlex HTML DSL is generated at runtime.
     # Shows the last `readings` values of one provider as a line. The browser draws the line (Chart.js).
-    class LineGraphWidget < Phlex::HTML
+    class LineGraphWidget < Widget
       extend T::Sig
 
       DEFAULT_READINGS = 60
-
-      sig { returns(Placement) }
-      attr_reader :placement
-
-      sig { returns(Providers::Base) }
-      attr_reader :provider
 
       sig { returns(Integer) }
       attr_reader :readings

@@ -104,7 +104,7 @@ module Pulsedeck
       value
     end
 
-    sig { params(widget: T.untyped).returns(T.any(Components::ValueWidget, Components::LineGraphWidget)) }
+    sig { params(widget: T.untyped).returns(Components::Widget) }
     def self.build_widget(widget)
       raise TypeError, 'Each widget must be a mapping' unless widget.is_a?(Hash)
 
@@ -116,7 +116,7 @@ module Pulsedeck
 
     sig do
       params(type: T.untyped, provider: Providers::Base, attributes: T::Hash[Symbol, T.untyped])
-        .returns(T.any(Components::ValueWidget, Components::LineGraphWidget))
+        .returns(Components::Widget)
     end
     def self.build_typed(type, provider, attributes)
       case type

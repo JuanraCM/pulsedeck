@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Pulsedeck::Components::LineGraphWidget do
+  let(:html) { described_class.new(provider: provider, placement: placement, readings: 5).call }
+  let(:placement) { Pulsedeck::Placement.new(column: 1, row: 1) }
   let(:provider) do
     Class.new(Pulsedeck::Providers::Base) do
       define_method(:id) { 'alpha' }
@@ -10,8 +12,10 @@ RSpec.describe Pulsedeck::Components::LineGraphWidget do
       define_method(:read) { 1.0 }
     end.new
   end
-  let(:placement) { Pulsedeck::Placement.new(column: 1, row: 1) }
-  let(:html) { described_class.new(provider: provider, placement: placement, readings: 5).call }
+
+  it 'is a widget' do
+    expect(described_class).to be < Pulsedeck::Components::Widget
+  end
 
   it 'renders the label and a canvas with the graph data attributes', :aggregate_failures do
     expect(html).to include('Alpha', '<canvas', 'data-graph="alpha"', 'data-readings="5"', 'data-unit="W"')

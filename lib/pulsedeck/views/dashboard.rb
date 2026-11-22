@@ -7,9 +7,7 @@ module Pulsedeck
     class Dashboard < Phlex::HTML
       extend T::Sig
 
-      Widgets = T.type_alias { T::Array[T.any(Components::ValueWidget, Components::LineGraphWidget)] }
-
-      sig { params(columns: Integer, rows: Integer, widgets: Widgets).void }
+      sig { params(columns: Integer, rows: Integer, widgets: T::Array[Components::Widget]).void }
       def initialize(columns:, rows:, widgets:)
         widgets.each { |widget| check_bounds(widget.placement, columns, rows) }
         @columns = columns

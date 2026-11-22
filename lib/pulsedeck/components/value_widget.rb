@@ -4,14 +4,8 @@
 module Pulsedeck
   module Components
     # typed: true because the Phlex HTML DSL is generated at runtime.
-    class ValueWidget < Phlex::HTML
+    class ValueWidget < Widget
       extend T::Sig
-
-      sig { returns(Placement) }
-      attr_reader :placement
-
-      sig { returns(Providers::Base) }
-      attr_reader :provider
 
       sig { params(provider: Providers::Base, placement: Placement).void }
       def initialize(provider:, placement:)

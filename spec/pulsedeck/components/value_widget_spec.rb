@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Pulsedeck::Components::ValueWidget do
+  let(:html) { described_class.new(provider: provider, placement: Pulsedeck::Placement.new(column: 1, row: 1)).call }
   let(:provider) do
     value = reading
     Class.new(Pulsedeck::Providers::Base) do
@@ -11,7 +12,10 @@ RSpec.describe Pulsedeck::Components::ValueWidget do
       define_method(:read) { value }
     end.new
   end
-  let(:html) { described_class.new(provider: provider, placement: Pulsedeck::Placement.new(column: 1, row: 1)).call }
+
+  it 'is a widget' do
+    expect(described_class).to be < Pulsedeck::Components::Widget
+  end
 
   context 'with a value' do
     let(:reading) { 47.25 }
