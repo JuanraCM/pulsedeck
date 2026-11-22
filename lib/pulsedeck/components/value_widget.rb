@@ -16,7 +16,7 @@ module Pulsedeck
 
       sig { void }
       def view_template
-        render(Panel.new(title: @provider.label, placement: @placement)) { value_span }
+        render(Panel.new(title: @provider.label, placement: @placement)) { value_span('value-fit') }
       end
     end
   end

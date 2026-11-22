@@ -28,6 +28,8 @@ module Pulsedeck
         .graph-widget .value { font-size: clamp(1rem, 12cqmin, 3rem); }
         .graph { position: relative; flex: 1; min-height: 0; }
         .value { font-size: clamp(1rem, 22cqmin, 8rem); font-weight: bold; }
+        .panel-body:has(> .value-fit) { display: flex; align-items: center; justify-content: center; }
+        .value-fit { font-size: min(22cqw, 60cqh); line-height: 1; white-space: nowrap; }
       CSS
 
       # refresh: seconds after which the browser reloads the page. Nil means never.

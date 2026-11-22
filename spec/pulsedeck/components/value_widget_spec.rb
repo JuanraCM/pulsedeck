@@ -25,6 +25,7 @@ RSpec.describe Pulsedeck::Components::ValueWidget do
       expect(html).to include('47.3 W')
       expect(html).to include('data-metric="alpha"')
       expect(html).to include('data-unit="W"')
+      expect(html).to include('class="value value-fit"')
     end
   end
 
