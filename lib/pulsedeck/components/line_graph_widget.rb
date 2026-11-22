@@ -26,8 +26,11 @@ module Pulsedeck
       sig { void }
       def view_template
         render(Panel.new(title: @provider.label, placement: @placement)) do
-          div(class: 'graph') do
-            canvas(data: { graph: @provider.id, readings: @readings, unit: @provider.unit })
+          div(class: 'graph-widget') do
+            value_span
+            div(class: 'graph') do
+              canvas(data: { graph: @provider.id, readings: @readings, unit: @provider.unit })
+            end
           end
         end
       end

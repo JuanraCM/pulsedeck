@@ -16,6 +16,17 @@ module Pulsedeck
 
       sig { returns(Providers::Base) }
       attr_reader :provider
+
+      protected
+
+      # Renders the live value. The browser updates it through data-metric and data-unit.
+      sig { params(extra_class: T.nilable(String)).void }
+      def value_span(extra_class = nil)
+        value = @provider.value
+        span(class: ['value', extra_class].compact, data: { metric: @provider.id, unit: @provider.unit }) do
+          value.nil? ? 'N/A' : "#{value} #{@provider.unit}"
+        end
+      end
     end
   end
 end

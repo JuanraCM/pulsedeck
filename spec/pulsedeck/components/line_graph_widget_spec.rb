@@ -19,7 +19,11 @@ RSpec.describe Pulsedeck::Components::LineGraphWidget do
 
   it 'renders the label and a canvas with the graph data attributes', :aggregate_failures do
     expect(html).to include('Alpha', '<canvas', 'data-graph="alpha"', 'data-readings="5"', 'data-unit="W"')
-    expect(html).not_to include('data-metric')
+    expect(html).not_to include('<canvas data-metric', 'data-metric="alpha" data-graph')
+  end
+
+  it 'renders the current value in a live-updated span', :aggregate_failures do
+    expect(html).to include('<span class="value" data-metric="alpha" data-unit="W">1.0 W</span>')
   end
 
   it 'uses 60 readings by default' do

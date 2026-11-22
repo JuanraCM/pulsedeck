@@ -24,7 +24,9 @@ module Pulsedeck
         }
         .panel-title { margin: 0 0 0.5rem; font-size: 1rem; color: var(--muted); }
         .panel-body { flex: 1; min-height: 0; }
-        .graph { position: relative; height: 100%; }
+        .graph-widget { display: flex; flex-direction: column; height: 100%; }
+        .graph-widget .value { font-size: clamp(1rem, 12cqmin, 3rem); }
+        .graph { position: relative; flex: 1; min-height: 0; }
         .value { font-size: clamp(1rem, 22cqmin, 8rem); font-weight: bold; }
       CSS
 

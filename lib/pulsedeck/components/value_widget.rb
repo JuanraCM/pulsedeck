@@ -16,12 +16,7 @@ module Pulsedeck
 
       sig { void }
       def view_template
-        value = @provider.value
-        render(Panel.new(title: @provider.label, placement: @placement)) do
-          span(class: 'value', data: { metric: @provider.id, unit: @provider.unit }) do
-            value.nil? ? 'N/A' : "#{value} #{@provider.unit}"
-          end
-        end
+        render(Panel.new(title: @provider.label, placement: @placement)) { value_span }
       end
     end
   end
