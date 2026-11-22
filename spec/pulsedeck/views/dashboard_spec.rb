@@ -36,22 +36,16 @@ RSpec.describe Pulsedeck::Views::Dashboard do
       described_class.new(columns: 1, rows: 1, widgets: [graph])
     end
 
-    it 'loads Chart.js before the script and draws the graph', :aggregate_failures do
+    it 'loads Chart.js, the graph script and the event script in order', :aggregate_failures do
       html = dashboard.call
-      expect(html).to include('<script src="/vendor/chart.umd.min.js"></script>', 'data-graph="cpu_load"')
-      expect(html.index('chart.umd.min.js')).to be < html.index('new Chart(')
-      expect(described_class::SCRIPT).to include('new Chart(', 'data-graph')
+      tags = ['<script src="/vendor/chart.umd.min.js"></script>', '<script src="/js/graphs.js"></script>',
+              '<script src="/js/events.js"></script>']
+      expect(html).to include(*tags, 'data-graph="cpu_load"')
+      expect(tags.map { |tag| html.index(tag) }).to eq(tags.map { |tag| html.index(tag) }.sort)
     end
 
     it 'includes the graph provider' do
       expect(dashboard.providers.map(&:id)).to eq(['cpu_load'])
-    end
-  end
-
-  describe 'SCRIPT' do
-    it 'reloads the page when the server state changes', :aggregate_failures do
-      expect(described_class::SCRIPT).to include("EventSource('/events')", 'location.reload()')
-      expect(described_class::SCRIPT).not_to include('fetch(')
     end
   end
 end

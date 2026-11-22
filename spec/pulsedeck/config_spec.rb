@@ -70,7 +70,7 @@ RSpec.describe Pulsedeck::Config do
 
     it 'adds the event stream script', :aggregate_failures do
       html = described_class.load(path).call
-      expect(html).to include('<script>', "EventSource('/events')")
+      expect(html).to include('<script src="/js/events.js"></script>')
     end
   end
 
