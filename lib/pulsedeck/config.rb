@@ -3,49 +3,13 @@
 
 module Pulsedeck
   # Builds the dashboard from the YAML config file.
-  module Config # rubocop:disable Metrics/ModuleLength -- the default YAML text is part of the module
+  module Config
     extend T::Sig
 
     # Raised when the config file is not valid. The message starts with the file path.
     class Error < StandardError; end
 
-    DEFAULT = <<~YAML
-      # Size of the dashboard grid, in cells.
-      grid:
-        columns: 3
-        rows: 4
-
-      # Each widget has a provider and a placement.
-      # column and row start at 1. width and height are optional (default 1).
-      # type is optional: value (default) or line_graph. readings is optional for line_graph: number of past readings (default 60).
-      widgets:
-        - provider: cpu_load # Provider id. Known ids: cpu_temperature, cpu_load, gpu_temperature, gpu_power, gpu_load, ram_usage, vram_usage
-          column: 1
-          row: 1
-          height: 2
-        - provider: cpu_temperature
-          column: 1
-          row: 3
-          height: 2
-        - provider: gpu_power
-          column: 2
-          row: 1
-          height: 2
-        - provider: gpu_load
-          column: 2
-          row: 3
-        - provider: gpu_temperature
-          column: 2
-          row: 4
-        - provider: ram_usage
-          column: 3
-          row: 1
-          height: 2
-        - provider: vram_usage
-          column: 3
-          row: 3
-          height: 2
-    YAML
+    DEFAULT = T.let(File.read(File.expand_path('default_config.yml', __dir__)), String)
 
     PROVIDERS = T.let({
       'cpu_temperature' => Providers::CpuTemperature,
